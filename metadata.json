@@ -1,5 +1,7 @@
 {
   "name": "AgriNoir",
   "description": "A precision agriculture app for modern farmers featuring real-time monitoring, marketplace, and educational resources.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "geolocation"
+  ]
 }

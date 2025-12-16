@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScreenName } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface BottomNavProps {
   currentScreen: ScreenName;
@@ -7,6 +8,8 @@ interface BottomNavProps {
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({ currentScreen, onNavigate }) => {
+  const { t } = useLanguage();
+
   const getIconClass = (screen: ScreenName) => {
     return currentScreen === screen 
       ? "text-primary transition-colors" 
@@ -25,6 +28,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentScreen, onNavigate 
     ScreenName.MY_FARM,
     ScreenName.MARKETPLACE,
     ScreenName.EDUCATION,
+    ScreenName.CHAT_BOT,
     ScreenName.ACCOUNT
   ].includes(currentScreen);
 
@@ -38,19 +42,18 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentScreen, onNavigate 
           className="flex flex-col items-center gap-1 group w-12"
         >
           <span className={`material-symbols-outlined text-[26px] ${getIconClass(ScreenName.HOME)}`}>home</span>
-          <span className={getTextClass(ScreenName.HOME)}>Beranda</span>
+          <span className={getTextClass(ScreenName.HOME)}>{t.nav.home}</span>
         </button>
 
         <button 
           onClick={() => onNavigate(ScreenName.MY_FARM)}
           className="flex flex-col items-center gap-1 group w-12"
         >
-           {/* Using map icon for My Farm to match visual */}
           <span className={`material-symbols-outlined text-[26px] ${getIconClass(ScreenName.MY_FARM)}`}>map</span>
-          <span className={getTextClass(ScreenName.MY_FARM)}>Lahan</span>
+          <span className={getTextClass(ScreenName.MY_FARM)}>{t.nav.land}</span>
         </button>
 
-        {/* Floating Action Button for center */}
+        {/* Center Button - Marketplace */}
         <div className="relative -top-5">
           <button 
             onClick={() => onNavigate(ScreenName.MARKETPLACE)}
@@ -60,12 +63,13 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentScreen, onNavigate 
           </button>
         </div>
 
+        {/* Restored Education (Library/Video) */}
         <button 
           onClick={() => onNavigate(ScreenName.EDUCATION)}
           className="flex flex-col items-center gap-1 group w-12"
         >
-          <span className={`material-symbols-outlined text-[26px] ${getIconClass(ScreenName.EDUCATION)}`}>school</span>
-          <span className={getTextClass(ScreenName.EDUCATION)}>Belajar</span>
+          <span className={`material-symbols-outlined text-[26px] ${getIconClass(ScreenName.EDUCATION)}`}>menu_book</span>
+          <span className={getTextClass(ScreenName.EDUCATION)}>{t.nav.education}</span>
         </button>
 
         <button 
@@ -73,7 +77,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentScreen, onNavigate 
           className="flex flex-col items-center gap-1 group w-12"
         >
           <span className={`material-symbols-outlined text-[26px] ${getIconClass(ScreenName.ACCOUNT)}`}>person</span>
-          <span className={getTextClass(ScreenName.ACCOUNT)}>Akun</span>
+          <span className={getTextClass(ScreenName.ACCOUNT)}>{t.nav.account}</span>
         </button>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ScreenName } from '../types';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface AccountProps {
   onNavigate: (screen: ScreenName) => void;
@@ -7,9 +8,20 @@ interface AccountProps {
 
 export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  const { t, language, setLanguage } = useLanguage();
+
+  // Kalkulasi tanggal kadaluarsa (1 bulan dari sekarang)
+  const today = new Date();
+  const expiryDate = new Date(today);
+  expiryDate.setMonth(today.getMonth() + 1);
+  const formattedExpiryDate = expiryDate.toLocaleDateString(language === 'id' ? 'id-ID' : 'en-US', { day: 'numeric', month: 'short', year: 'numeric' });
 
   const handleFeatureClick = (featureName: string) => {
     alert(`Fitur "${featureName}" akan segera tersedia.`);
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'id' ? 'en' : 'id');
   };
 
   return (
@@ -17,7 +29,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
       <div className="sticky top-0 z-50 bg-background-dark/90 backdrop-blur-md border-b border-white/5">
         <div className="flex items-center p-4 justify-between">
           <button onClick={() => onNavigate(ScreenName.HOME)} className="p-2 rounded-full hover:bg-white/10 transition-colors"><span className="material-symbols-outlined">arrow_back</span></button>
-          <h2 className="text-lg font-bold leading-tight tracking-[-0.015em] text-center">Akun Saya</h2>
+          <h2 className="text-lg font-bold leading-tight tracking-[-0.015em] text-center">{t.account.title}</h2>
           <button className="p-2 rounded-full hover:bg-white/10 transition-colors opacity-0 pointer-events-none"><span className="material-symbols-outlined">settings</span></button>
         </div>
       </div>
@@ -40,7 +52,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
         </div>
 
         <div className="px-4 mt-2">
-          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider px-2 mb-3">Langganan</h3>
+          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider px-2 mb-3">{t.account.subscription}</h3>
           <div onClick={() => onNavigate(ScreenName.SUBSCRIPTION)} className="relative overflow-hidden rounded-xl bg-gradient-to-br from-surface-dark to-[#0f1f16] border border-primary/20 p-4 shadow-lg group cursor-pointer active:scale-[0.98] transition-all">
             <div className="absolute -right-6 -top-6 w-24 h-24 bg-primary/10 rounded-full blur-2xl group-hover:bg-primary/20 transition-all"></div>
             <div className="relative z-10 flex items-center justify-between">
@@ -49,7 +61,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
                   <span className="material-symbols-outlined text-primary text-[20px]">workspace_premium</span>
                   <p className="text-white text-base font-bold">AgriNoir Premium</p>
                 </div>
-                <p className="text-slate-400 text-xs font-normal">Aktif sampai 20 Des 2024</p>
+                <p className="text-slate-400 text-xs font-normal">{t.account.activeUntil} {formattedExpiryDate}</p>
               </div>
               <span className="material-symbols-outlined text-primary/50 group-hover:translate-x-1 transition-transform">chevron_right</span>
             </div>
@@ -57,7 +69,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
         </div>
 
         <div className="px-4 mt-8">
-          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider px-2 mb-3">Pengaturan Aplikasi</h3>
+          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider px-2 mb-3">{t.account.appSettings}</h3>
           <div className="bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-white/5">
             <div 
               className="flex items-center justify-between p-4 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer select-none"
@@ -65,7 +77,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500"><span className="material-symbols-outlined text-[20px]">notifications</span></div>
-                <span className="text-sm font-medium">Notifikasi</span>
+                <span className="text-sm font-medium">{t.account.notifications}</span>
               </div>
               <div className="relative inline-flex items-center pointer-events-none">
                 <input checked={notificationsEnabled} readOnly className="sr-only peer" type="checkbox" />
@@ -74,22 +86,22 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
             </div>
             <div 
               className="flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer active:bg-white/10"
-              onClick={() => handleFeatureClick('Ganti Bahasa')}
+              onClick={toggleLanguage}
             >
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500"><span className="material-symbols-outlined text-[20px]">language</span></div>
-                <span className="text-sm font-medium">Bahasa</span>
+                <span className="text-sm font-medium">{t.account.language}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400">Indonesia</span>
-                <span className="material-symbols-outlined text-slate-500 text-[20px]">chevron_right</span>
+                <span className="text-xs text-slate-400">{language === 'id' ? 'Indonesia' : 'English'}</span>
+                <span className="material-symbols-outlined text-slate-500 text-[20px]">sync_alt</span>
               </div>
             </div>
           </div>
         </div>
 
         <div className="px-4 mt-8">
-          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider px-2 mb-3">Bantuan & Dukungan</h3>
+          <h3 className="text-slate-400 text-xs font-bold uppercase tracking-wider px-2 mb-3">{t.account.help}</h3>
           <div className="bg-surface-dark rounded-xl overflow-hidden shadow-sm border border-white/5">
              {[
                {icon: 'help', color: 'purple', label: 'Pusat Bantuan'},
@@ -113,7 +125,7 @@ export const Account: React.FC<AccountProps> = ({ onNavigate }) => {
 
         <div className="px-6 mt-8 mb-6 flex flex-col gap-6">
           <button onClick={() => onNavigate(ScreenName.LANDING)} className="w-full py-3.5 rounded-xl border border-red-500/30 text-red-500 font-bold text-sm bg-red-500/5 hover:bg-red-500/10 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-            <span className="material-symbols-outlined text-[20px]">logout</span> Keluar
+            <span className="material-symbols-outlined text-[20px]">logout</span> {t.account.logout}
           </button>
           <div className="text-center">
             <p className="text-xs text-slate-600 font-medium">AgriNoir v1.0.2 (Build 204)</p>
